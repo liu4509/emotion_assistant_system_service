@@ -4,10 +4,13 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './Role.entity';
+import { Diarie } from 'src/diarie/entities/diarie.entity';
+import { Clock } from 'src/clock/entities/clocks.entity';
 
 @Entity({
   name: 'users',
@@ -61,4 +64,10 @@ export class User {
     name: 'user_roles',
   })
   roles: Role[];
+
+  @OneToMany(() => Diarie, (diaries) => diaries.user)
+  diaries: Diarie[];
+
+  @OneToMany(() => Clock, (clocks) => clocks.user)
+  clocks: Clock[];
 }

@@ -1,0 +1,24 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity({
+  name: 'solutions',
+})
+export class Solution {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({
+    length: 50,
+    comment: '选项内容',
+  })
+  content: string;
+
+  @Column({
+    comment: '选项对应分值',
+  })
+  score: number;
+  @Column({
+    comment: '是否为最佳答案',
+  })
+  is_correct: boolean;
+}

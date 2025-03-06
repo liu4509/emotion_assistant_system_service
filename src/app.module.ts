@@ -31,9 +31,26 @@ import { Questionnaire } from './questionnaire/entities/questionnaire.entity';
 import { Problem } from './scenario/entities/problems.entity';
 import { Scenario } from './scenario/entities/scenario.entity';
 import { Solution } from './scenario/entities/solution.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { LoginGuard } from './guard/login.guard';
+import { PermissionGuard } from './guard/permission.guard';
 
 @Module({
   imports: [
+    UserModule,
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(configService: ConfigService) {
+        return {
+          secret: configService.get('jwt_secret'),
+          signOptions: {
+            expiresIn: '30m',
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: 'src/.env',
@@ -75,7 +92,6 @@ import { Solution } from './scenario/entities/solution.entity';
       },
       inject: [ConfigService],
     }),
-    UserModule,
     DiarieModule,
     AttractionModule,
     ClockModule,
@@ -87,6 +103,16 @@ import { Solution } from './scenario/entities/solution.entity';
     ScenarioModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
+  ],
 })
 export class AppModule {}

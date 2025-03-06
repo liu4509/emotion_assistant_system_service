@@ -11,6 +11,14 @@ interface UserInfo {
   permissions: Permission[];
 }
 
+export class UserDetailVo {
+  id: number;
+  username: string;
+  email: string;
+  headPic: string;
+  createTime: Date;
+}
+
 export class LoginUserVo {
   userInfo: UserInfo;
   accessToken: string;
@@ -18,7 +26,7 @@ export class LoginUserVo {
 }
 
 export class JwtUserVo {
-  id: number;
+  userId: number;
   username: string;
   roles: string[];
   permissions: Permission[];

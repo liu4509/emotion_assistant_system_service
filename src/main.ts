@@ -15,6 +15,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new InvokeRecordInterceptor());
   app.useGlobalFilters(new ResponseExceptionFilter());
 
+  // 跨域支持
+  app.enableCors();
   await app.listen(configService.get('nest_server_port'));
 }
 bootstrap();

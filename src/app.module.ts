@@ -35,6 +35,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './guard/login.guard';
 import { PermissionGuard } from './guard/permission.guard';
+import { RedisModule } from './redis/redis.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -64,7 +66,7 @@ import { PermissionGuard } from './guard/permission.guard';
           username: configService.get('mysql_server_username'),
           password: configService.get('mysql_server_password'),
           database: configService.get('mysql_server_database'),
-          synchronize: false,
+          synchronize: false, // true 仅适用于数据库中没数据表 如刚新建数据库 初始化数据表 有表后改为false
           logging: true,
           entities: [
             User,
@@ -92,6 +94,8 @@ import { PermissionGuard } from './guard/permission.guard';
       },
       inject: [ConfigService],
     }),
+    RedisModule,
+    EmailModule,
     DiarieModule,
     AttractionModule,
     ClockModule,

@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/User.entity';
 import { Repository } from 'typeorm';
@@ -12,6 +18,7 @@ import {
 } from './dto/user.dto';
 import { md5 } from 'src/utils';
 import { JwtUserVo, LoginUserVo } from './vo/user.vo';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class UserService {
@@ -24,6 +31,8 @@ export class UserService {
   @InjectRepository(Permission)
   private permissionRepository: Repository<Permission>;
 
+  @Inject(RedisService)
+  private redisService: RedisService;
   // 用户列表
   async findUsersByPage(pageNo: number, pageSize: number) {
     const skipCount = (pageNo - 1) * pageSize;
@@ -82,9 +91,17 @@ export class UserService {
   // 注册
   async register(user: RegisterUserDto) {
     /*
+    1. 按照email查询redis中的验证码
     2. 按照username查询用户表
     3. 保存新的user到数据库
     */
+    const captcha = await this.redisService.get(`captcha_${user.email}`);
+    if (!captcha) {
+      throw new HttpException('验证码失效', HttpStatus.BAD_REQUEST);
+    }
+    if (user.captcha !== captcha) {
+      throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
+    }
 
     const foundUser = await this.userRepository.findOneBy({
       username: user.username,
@@ -97,6 +114,8 @@ export class UserService {
     newUser.username = user.username;
     newUser.password = md5(user.password);
     newUser.email = user.email;
+    newUser.headPic =
+      'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';
 
     try {
       await this.userRepository.save(newUser);
@@ -144,9 +163,11 @@ export class UserService {
     role2.permissions = [permission1];
 
     // 用户依赖角色，角色依赖权限 注册顺序不能乱
-    await this.permissionRepository.save([permission1, permission2]);
-    await this.roleRepository.save([role1, role2]);
-    await this.userRepository.save([user1, user2]);
+    // 确定是 insert 的时候 用 insert 比用 save 更好，能够批量插入数据
+    // await this.permissionRepository.save([permission1, permission2]);
+    await this.permissionRepository.insert([permission1, permission2]);
+    await this.roleRepository.insert([role1, role2]);
+    await this.userRepository.insert([user1, user2]);
   }
   // 用户登录
   async login(loginUser: LoginUserDto, isAdmin: boolean) {

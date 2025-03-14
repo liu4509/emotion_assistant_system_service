@@ -25,6 +25,8 @@ import {
   UserInfo,
 } from 'src/decorator/custom.decorator';
 import { generateParseIntPipe } from 'src/utils';
+import { RedisService } from 'src/redis/redis.service';
+import { EmailService } from 'src/email/email.service';
 
 @Controller('user')
 export class UserController {
@@ -33,7 +35,52 @@ export class UserController {
   private jwtService: JwtService;
   @Inject(ConfigService)
   private configService: ConfigService;
+  @Inject(RedisService)
+  private redisService: RedisService;
+  @Inject(EmailService)
+  private emailService: EmailService;
 
+  // 验证码
+  @Get('register-captcha')
+  async captcha(
+    @Query('address') address: string,
+    @Query('ttl') ttl: number = 60,
+  ) {
+    const code = Math.random().toString().slice(2, 8);
+    console.log(`${address} -- ${code}`);
+
+    await this.redisService.set(`captcha_${address}`, code, ttl);
+
+    await this.emailService.sendMail({
+      to: address,
+      subject: '注册验证码 - 心情治愈网站',
+      html: `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #4A90E2;">你好！👋</h2>
+          <p style="font-size: 16px;">感谢你使用心情治愈网站！以下是你的注册验证码：</p>
+          <div style="background: #F5F5F5; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+            <p style="font-size: 24px; font-weight: bold; color: #4A90E2; margin: 0;">${code}</p>
+          </div>
+          <button 
+            style="background: #4A90E2; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;"
+            onclick="navigator.clipboard.writeText('${code}').then(() => alert('验证码已复制！'))"
+          >
+            点击复制验证码
+          </button>
+          <p style="font-size: 14px; color: #666; margin-top: 20px;">温馨提示：此验证码将在 ${ttl < 60 ? `${ttl} 秒` : `${Math.floor(ttl / 60)} 分钟`}后失效，请尽快使用。</p>
+          <p style="font-size: 14px; color: #666;">如果你未进行此操作，请忽略此邮件。</p>
+        </div>
+        `,
+    });
+    return '发送成功';
+
+    // await this.emailService.sendMail({
+    //   to: address,
+    //   subject: '注册验证码',
+    //   html: `<p>你的验证码是${code}</p>`,
+    // });
+    // return '发送成功';
+  }
   // 用户列表 权限：登录后并有admin权限
   @Get('admin/list')
   @RequireLogin()

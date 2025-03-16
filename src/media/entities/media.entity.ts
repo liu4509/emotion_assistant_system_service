@@ -23,18 +23,27 @@ export class Media {
   title: string;
 
   @Column({
-    name: 'title_img',
+    length: 50,
+    comment: '艺术家',
+  })
+  artist: string;
+
+  @Column({
     length: 100,
     comment: '标题图片',
   })
-  titleImg: string;
+  cover: string;
 
   @Column({
-    name: 'play_url',
-    length: 200,
+    length: 100,
     comment: '资源播放地址',
   })
-  playUrl: string;
+  url: string;
+
+  @Column({
+    comment: '时长(秒)',
+  })
+  duration: number;
 
   @Column({
     length: 500,

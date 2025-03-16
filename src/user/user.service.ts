@@ -168,11 +168,9 @@ export class UserService {
     role2.permissions = [permission1];
 
     // 用户依赖角色，角色依赖权限 注册顺序不能乱
-    // 确定是 insert 的时候 用 insert 比用 save 更好，能够批量插入数据
-    // await this.permissionRepository.save([permission1, permission2]);
-    await this.permissionRepository.insert([permission1, permission2]);
-    await this.roleRepository.insert([role1, role2]);
-    await this.userRepository.insert([user1, user2]);
+    await this.permissionRepository.save([permission1, permission2]);
+    await this.roleRepository.save([role1, role2]);
+    await this.userRepository.save([user1, user2]);
   }
   // 用户登录
   async login(loginUser: LoginUserDto, isAdmin: boolean) {

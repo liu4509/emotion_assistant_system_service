@@ -14,13 +14,13 @@ export class Category {
   id: number;
 
   @Column({
-    length: 20,
+    length: 50,
     comment: '情绪中文值',
   })
   label: string;
 
   @Column({
-    length: 20,
+    length: 50,
     comment: '情绪 value',
   })
   value: string;

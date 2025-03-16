@@ -20,7 +20,7 @@ export class Diarie {
   id: number;
 
   @Column({
-    length: 200,
+    length: 1000,
     comment: '日记内容',
   })
   content: string;

@@ -17,13 +17,13 @@ export class Questionnaire {
   id: number;
 
   @Column({
-    length: 50,
+    length: 200,
     comment: '问卷标题',
   })
   title: string;
 
   @Column({
-    length: 100,
+    length: 200,
     comment: '描述',
   })
   description: string;

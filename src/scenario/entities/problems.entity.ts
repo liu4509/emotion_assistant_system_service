@@ -15,7 +15,7 @@ export class Problem {
   id: number;
 
   @Column({
-    length: 50,
+    length: 200,
     comment: '问卷问题内容',
   })
   content: string;

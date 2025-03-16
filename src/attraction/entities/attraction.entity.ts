@@ -23,7 +23,7 @@ export class Attraction {
   title: string;
 
   @Column({
-    length: 50,
+    length: 500,
     comment: '景点描述',
   })
   details: string;

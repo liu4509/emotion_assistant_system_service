@@ -17,13 +17,13 @@ export class Scenario {
   id: number;
 
   @Column({
-    length: 50,
+    length: 200,
     comment: '情绪调节场景标题',
   })
   title: string;
 
   @Column({
-    length: 100,
+    length: 500,
     comment: '描述',
   })
   description: string;

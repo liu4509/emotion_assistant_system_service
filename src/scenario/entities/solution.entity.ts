@@ -8,7 +8,7 @@ export class Solution {
   id: number;
 
   @Column({
-    length: 50,
+    length: 100,
     comment: '选项内容',
   })
   content: string;

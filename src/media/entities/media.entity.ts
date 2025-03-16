@@ -23,12 +23,6 @@ export class Media {
   title: string;
 
   @Column({
-    length: 10,
-    comment: '文件类型',
-  })
-  type: string;
-
-  @Column({
     name: 'title_img',
     length: 100,
     comment: '标题图片',
@@ -37,13 +31,13 @@ export class Media {
 
   @Column({
     name: 'play_url',
-    length: 100,
+    length: 200,
     comment: '资源播放地址',
   })
   playUrl: string;
 
   @Column({
-    length: 100,
+    length: 500,
     comment: '描述',
   })
   description: string;

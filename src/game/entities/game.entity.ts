@@ -23,7 +23,7 @@ export class Game {
   title: string;
 
   @Column({
-    length: 100,
+    length: 200,
     comment: '游戏链接地址',
   })
   url: string;
@@ -35,7 +35,7 @@ export class Game {
   image: string;
 
   @Column({
-    length: 100,
+    length: 500,
     comment: '描述',
   })
   description: string;

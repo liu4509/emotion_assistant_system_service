@@ -15,7 +15,7 @@ export class Mood {
 
   @Column({
     length: 20,
-    comment: '用户名',
+    comment: '情绪名',
   })
   name: string;
 

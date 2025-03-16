@@ -17,13 +17,13 @@ export class Video {
   id: number;
 
   @Column({
-    length: 50,
+    length: 100,
     comment: '视频标题',
   })
   title: string;
 
   @Column({
-    length: 100,
+    length: 200,
     comment: '资源播放地址',
   })
   url: string;
@@ -35,7 +35,7 @@ export class Video {
   cover: string;
 
   @Column({
-    length: 100,
+    length: 500,
     comment: '描述',
   })
   description: string;

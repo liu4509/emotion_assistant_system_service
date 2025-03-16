@@ -14,10 +14,6 @@ export class Solution {
   content: string;
 
   @Column({
-    comment: '选项对应分值',
-  })
-  score: number;
-  @Column({
     comment: '是否为最佳答案',
   })
   is_correct: boolean;

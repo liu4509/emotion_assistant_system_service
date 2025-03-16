@@ -15,9 +15,15 @@ export class Category {
 
   @Column({
     length: 20,
-    comment: '情绪分类值',
+    comment: '情绪中文值',
   })
-  content: string;
+  label: string;
+
+  @Column({
+    length: 20,
+    comment: '情绪 value',
+  })
+  value: string;
 
   @CreateDateColumn()
   createTime: Date;

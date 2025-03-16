@@ -20,11 +20,6 @@ export class Question {
   })
   content: string;
 
-  @Column({
-    comment: '问题顺序1-5',
-  })
-  sort: number;
-
   @ManyToMany(() => Optionsi)
   @JoinTable({
     name: 'question_options',

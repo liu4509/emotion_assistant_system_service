@@ -23,7 +23,7 @@ export class Problem {
   @Column({
     comment: '问题顺序1-5',
   })
-  sort: number;
+  order: number;
 
   @ManyToMany(() => Solution)
   @JoinTable({

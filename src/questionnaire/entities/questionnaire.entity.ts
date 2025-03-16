@@ -38,5 +38,5 @@ export class Questionnaire {
   @JoinTable({
     name: 'questionnaire_questions',
   })
-  roles: Question[];
+  questions: Question[];
 }

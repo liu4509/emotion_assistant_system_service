@@ -125,7 +125,7 @@ export class UserController {
     vo.id = user.id;
     vo.username = user.username;
     vo.email = user.email;
-    vo.headPic = user.headPic;
+    vo.avatar = user.avatar;
     vo.createTime = user.createTime;
 
     return vo;

@@ -26,14 +26,13 @@ export class Attraction {
     length: 50,
     comment: '景点描述',
   })
-  description: string;
+  details: string;
 
   @Column({
-    name: 'title_img',
     length: 100,
     comment: '标题图片',
   })
-  titleImg: string;
+  image: string;
 
   @CreateDateColumn()
   createTime: Date;

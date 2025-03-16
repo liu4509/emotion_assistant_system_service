@@ -38,7 +38,7 @@ export class UserService {
     const skipCount = (pageNo - 1) * pageSize;
 
     const [users, totalCount] = await this.userRepository.findAndCount({
-      select: ['id', 'username', 'email', 'headPic', 'createTime'],
+      select: ['id', 'username', 'email', 'avatar', 'createTime'],
       skip: skipCount,
       take: pageSize,
     });
@@ -53,8 +53,8 @@ export class UserService {
     const foundUser = await this.userRepository.findOneBy({
       id: userId,
     });
-    if (updateUserDto.headPic) {
-      foundUser.headPic = updateUserDto.headPic;
+    if (updateUserDto.avatar) {
+      foundUser.avatar = updateUserDto.avatar;
     }
 
     try {
@@ -114,7 +114,8 @@ export class UserService {
     newUser.username = user.username;
     newUser.password = md5(user.password);
     newUser.email = user.email;
-    newUser.headPic =
+    // 注册默认头像
+    newUser.avatar =
       'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';
 
     try {
@@ -135,10 +136,14 @@ export class UserService {
     user1.password = md5('123456');
     user1.email = '2608604500@qq.com';
     user1.isAdmin = true;
+    user1.avatar =
+      'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';
     const user2 = new User();
     user2.username = 'lzb';
     user2.password = md5('123456');
     user2.email = '2608604500@qq.com';
+    user2.avatar =
+      'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png';
 
     // 角色
     const role1 = new Role();
@@ -193,7 +198,7 @@ export class UserService {
       id: user.id,
       username: user.username,
       email: user.email,
-      headPic: user.headPic,
+      avatar: user.avatar,
       createTime: user.createTime.getTime(),
       isAdmin: user.isAdmin,
       roles: user.roles.map((item) => item.name),

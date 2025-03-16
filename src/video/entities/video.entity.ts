@@ -23,18 +23,16 @@ export class Video {
   title: string;
 
   @Column({
-    name: 'play_url',
     length: 100,
     comment: '资源播放地址',
   })
-  playUrl: string;
+  url: string;
 
   @Column({
-    name: 'title_img',
     length: 100,
     comment: '标题图片',
   })
-  titleImg: string;
+  cover: string;
 
   @Column({
     length: 100,

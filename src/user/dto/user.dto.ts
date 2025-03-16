@@ -49,7 +49,7 @@ export class UpdateUserPasswordDto {
 }
 
 export class UpdateUserDto {
-  headPic: string;
+  avatar: string;
 
   @IsNotEmpty({
     message: '邮箱不能为空',

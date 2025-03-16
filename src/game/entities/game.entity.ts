@@ -23,18 +23,16 @@ export class Game {
   title: string;
 
   @Column({
-    name: 'game_url',
     length: 100,
     comment: '游戏链接地址',
   })
-  GameUrl: string;
+  url: string;
 
   @Column({
-    name: 'title_img',
     length: 100,
     comment: '标题图片',
   })
-  titleImg: string;
+  image: string;
 
   @Column({
     length: 100,
@@ -47,7 +45,7 @@ export class Game {
 
   @UpdateDateColumn()
   updateTime: Date;
-
+  //TODO: vo 数据转发时 数组扁平化 名字改为category 需不需要扁平看结构
   @ManyToMany(() => Category)
   @JoinTable({
     name: 'game_categorys',

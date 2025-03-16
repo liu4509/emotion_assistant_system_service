@@ -38,12 +38,11 @@ export class User {
   email: string;
 
   @Column({
-    name: 'head_pic',
     length: 100,
     comment: '头像',
     nullable: true,
   })
-  headPic: string;
+  avatar: string;
 
   @Column({
     name: 'is_admin',

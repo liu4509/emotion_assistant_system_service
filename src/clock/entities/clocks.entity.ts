@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/user/entities/User.entity';
+import { Category } from 'src/attraction/entities/category.entity';
 
 @Entity({
   name: 'clocks',
@@ -16,11 +19,10 @@ export class Clock {
   id: number;
 
   @Column({
-    name: 'img_url',
     length: 100,
     comment: '打卡图片地址',
   })
-  imgUrl: string;
+  image: string;
 
   @CreateDateColumn()
   createTime: Date;
@@ -30,4 +32,10 @@ export class Clock {
 
   @ManyToOne(() => User, (user) => user.clocks)
   user: User;
+
+  @ManyToMany(() => Category)
+  @JoinTable({
+    name: 'clock_categorys',
+  })
+  categorys: Category[];
 }

@@ -4,7 +4,7 @@ interface UserInfo {
   id: number;
   username: string;
   email: string;
-  headPic: string;
+  avatar: string;
   isAdmin: boolean;
   createTime: number;
   roles: string[];
@@ -15,7 +15,7 @@ export class UserDetailVo {
   id: number;
   username: string;
   email: string;
-  headPic: string;
+  avatar: string;
   createTime: Date;
 }
 

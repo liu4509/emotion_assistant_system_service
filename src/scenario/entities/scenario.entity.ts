@@ -38,5 +38,5 @@ export class Scenario {
   @JoinTable({
     name: 'scenario_problems',
   })
-  roles: Problem[];
+  questions: Problem[];
 }

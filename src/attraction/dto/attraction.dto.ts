@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty } from 'class-validator';
 
 export class CreateAttractionDto {
   @IsNotEmpty({
@@ -16,6 +16,7 @@ export class CreateAttractionDto {
   @IsNotEmpty({
     message: '景点分类不能为空',
   })
+  @IsArray({ message: '分类必须是数组' })
   categoryValues: string[];
 }
 

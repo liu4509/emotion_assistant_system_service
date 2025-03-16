@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { Video } from './entities/video.entity';
@@ -24,36 +26,42 @@ export class VideoController {
 
   @Get()
   async findAll(): Promise<Video[]> {
-    return this.videoService.findAll();
+    return await this.videoService.findAll();
   }
 
   @Get('category')
   async findByCategory(
     @Query('value') categoryValue: string,
   ): Promise<Video[]> {
-    return this.videoService.findByCategory(categoryValue);
+    return await this.videoService.findByCategory(categoryValue);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Video> {
-    return this.videoService.findOne(+id);
+    return await this.videoService.findOne(+id);
   }
 
   @Post()
   async create(@Body() createVideoDto: CreateVideoDto): Promise<Video> {
-    return this.videoService.create(createVideoDto);
+    return await this.videoService.create(createVideoDto);
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updateVideoDto: UpdateVideoDto,
-  ): Promise<Video> {
-    return this.videoService.update(+id, updateVideoDto);
+  ) {
+    const result = await this.videoService.update(+id, updateVideoDto);
+    if (result) {
+      return '更新成功';
+    } else {
+      throw new HttpException('更新失败', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.videoService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.videoService.remove(+id);
+    return '删除成功';
   }
 }

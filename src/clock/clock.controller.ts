@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   Req,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ClockService } from './clock.service';
 import { Clock } from './entities/clocks.entity';
@@ -22,30 +24,30 @@ export class ClockController {
   @Get('init-data')
   async initData() {
     await this.clockService.initData();
-    return 'done';
+    return '打卡照片数据初始化完成';
   }
 
   @Get()
   async findAll(): Promise<Clock[]> {
-    return this.clockService.findAll();
+    return await this.clockService.findAll();
   }
 
   @Get('category')
   async findByCategory(
     @Query('value') categoryValue: string,
   ): Promise<Clock[]> {
-    return this.clockService.findByCategory(categoryValue);
+    return await this.clockService.findByCategory(categoryValue);
   }
 
   @Get('my')
   @RequireLogin()
   async findMyClocks(@UserInfo('userId') userId: number): Promise<Clock[]> {
-    return this.clockService.findByUser(userId);
+    return await this.clockService.findByUser(userId);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Clock> {
-    return this.clockService.findOne(+id);
+    return await this.clockService.findOne(+id);
   }
 
   @Post()
@@ -54,7 +56,7 @@ export class ClockController {
     @UserInfo('userId') userId: number,
     @Body() createClockDto: CreateClockDto,
   ): Promise<Clock> {
-    return this.clockService.create(userId, createClockDto);
+    return await this.clockService.create(userId, createClockDto);
   }
 
   @Patch(':id')
@@ -63,15 +65,19 @@ export class ClockController {
     @UserInfo('userId') userId: number,
     @Param('id') id: string,
     @Body() updateClockDto: UpdateClockDto,
-  ): Promise<Clock> {
-    return this.clockService.update(+id, userId, updateClockDto);
+  ) {
+    const result = await this.clockService.update(+id, userId, updateClockDto);
+    if (result) {
+      return '更新成功';
+    } else {
+      throw new HttpException('更新失败', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
-  async remove(
-    @UserInfo('userId') userId: number,
-    @Param('id') id: string,
-  ): Promise<void> {
-    return this.clockService.remove(+id, userId);
+  @RequireLogin()
+  async remove(@UserInfo('userId') userId: number, @Param('id') id: string) {
+    await this.clockService.remove(+id, userId);
+    return '删除成功';
   }
 }

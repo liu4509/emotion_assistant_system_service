@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ScenarioService } from './scenario.service';
 import { Scenario } from './entities/scenario.entity';
@@ -23,31 +25,37 @@ export class ScenarioController {
 
   @Get()
   async findAll(): Promise<Scenario[]> {
-    return this.scenarioService.findAll();
+    return await this.scenarioService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Scenario> {
-    return this.scenarioService.findOne(+id);
+    return await this.scenarioService.findOne(+id);
   }
 
   @Post()
   async create(
     @Body() createScenarioDto: CreateScenarioDto,
   ): Promise<Scenario> {
-    return this.scenarioService.create(createScenarioDto);
+    return await this.scenarioService.create(createScenarioDto);
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updateScenarioDto: UpdateScenarioDto,
-  ): Promise<Scenario> {
-    return this.scenarioService.update(+id, updateScenarioDto);
+  ) {
+    const result = await this.scenarioService.update(+id, updateScenarioDto);
+    if (result) {
+      return '更新成功';
+    } else {
+      throw new HttpException('更新失败', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.scenarioService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.scenarioService.remove(+id);
+    return '删除成功';
   }
 }

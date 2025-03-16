@@ -18,7 +18,7 @@ export class Media {
 
   @Column({
     length: 50,
-    comment: '音视频标题',
+    comment: '音频标题',
   })
   title: string;
 
@@ -35,7 +35,7 @@ export class Media {
   cover: string;
 
   @Column({
-    length: 100,
+    length: 500,
     comment: '资源播放地址',
   })
   url: string;
@@ -46,7 +46,7 @@ export class Media {
   duration: number;
 
   @Column({
-    length: 500,
+    length: 200,
     comment: '描述',
   })
   description: string;

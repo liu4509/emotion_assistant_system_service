@@ -17,13 +17,13 @@ export class Article {
   id: number;
 
   @Column({
-    length: 50,
+    length: 100,
     comment: '标题',
   })
   title: string;
 
   @Column({
-    length: 10,
+    length: 1000,
     comment: '内容',
   })
   content: string;
@@ -35,7 +35,7 @@ export class Article {
   cover: string;
 
   @Column({
-    length: 100,
+    length: 200,
     comment: '描述',
   })
   description: string;

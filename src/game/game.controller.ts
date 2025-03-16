@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { GameService } from './game.service';
 import { Game } from './entities/game.entity';
@@ -24,34 +26,37 @@ export class GameController {
 
   @Get()
   async findAll(): Promise<Game[]> {
-    return this.gameService.findAll();
+    return await this.gameService.findAll();
   }
 
   @Get('category')
   async findByCategory(@Query('value') categoryValue: string): Promise<Game[]> {
-    return this.gameService.findByCategory(categoryValue);
+    return await this.gameService.findByCategory(categoryValue);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Game> {
-    return this.gameService.findOne(+id);
+    return await this.gameService.findOne(+id);
   }
 
   @Post()
   async create(@Body() createGameDto: CreateGameDto): Promise<Game> {
-    return this.gameService.create(createGameDto);
+    return await this.gameService.create(createGameDto);
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateGameDto: UpdateGameDto,
-  ): Promise<Game> {
-    return this.gameService.update(+id, updateGameDto);
+  async update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
+    const result = await this.gameService.update(+id, updateGameDto);
+    if (result) {
+      return '更新成功';
+    } else {
+      throw new HttpException('更新失败', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.gameService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.gameService.remove(+id);
+    return '删除成功';
   }
 }

@@ -113,7 +113,8 @@ export class UserController {
     @UserInfo('userId') userId: number,
     @Body() passwordDto: UpdateUserPasswordDto,
   ) {
-    return await this.userService.updatePassword(userId, passwordDto);
+    await this.userService.updatePassword(userId, passwordDto);
+    return '密码修改成功';
   }
   // 用户信息
   @Get('info')
@@ -232,7 +233,7 @@ export class UserController {
     }
   }
   async jwt(tokenUserVo: JwtUserVo) {
-    const accessToken = this.jwtService.sign(
+    const accessToken = await this.jwtService.signAsync(
       {
         userId: tokenUserVo.userId,
         username: tokenUserVo.username,
@@ -244,7 +245,7 @@ export class UserController {
           this.configService.get('jwt_access_token_expires_time') || '30m',
       },
     );
-    const refreshToken = this.jwtService.sign(
+    const refreshToken = await this.jwtService.sign(
       { userId: tokenUserVo.userId },
       {
         expiresIn:

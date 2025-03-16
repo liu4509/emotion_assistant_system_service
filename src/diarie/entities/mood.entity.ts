@@ -1,10 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
   name: 'moods',
@@ -15,18 +9,18 @@ export class Mood {
 
   @Column({
     length: 20,
-    comment: '情绪名',
+    comment: '情绪 value',
   })
-  name: string;
+  value: string;
+
+  @Column({
+    length: 20,
+    comment: '情绪 中文',
+  })
+  label: string;
 
   @Column({
     comment: '对应分值',
   })
   score: number;
-
-  @CreateDateColumn()
-  createTime: Date;
-
-  @UpdateDateColumn()
-  updateTime: Date;
 }

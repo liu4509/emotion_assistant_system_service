@@ -37,6 +37,9 @@ import { LoginGuard } from './guard/login.guard';
 import { PermissionGuard } from './guard/permission.guard';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
+import { ChatModule } from './chat/chat.module';
+import { Chat } from './chat/entities/chat.entity';
+import { Message } from './chat/entities/message.entity';
 
 @Module({
   imports: [
@@ -87,6 +90,8 @@ import { EmailModule } from './email/email.module';
             Solution,
             Problem,
             Scenario,
+            Chat,
+            Message,
           ],
           poolSize: 10,
           connectorPackage: 'mysql2',
@@ -105,6 +110,7 @@ import { EmailModule } from './email/email.module';
     GameModule,
     QuestionnaireModule,
     ScenarioModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

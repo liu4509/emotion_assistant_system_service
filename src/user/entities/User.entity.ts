@@ -11,6 +11,7 @@ import {
 import { Role } from './Role.entity';
 import { Diarie } from 'src/diarie/entities/diarie.entity';
 import { Clock } from 'src/clock/entities/clocks.entity';
+import { Chat } from 'src/chat/entities/chat.entity';
 
 @Entity({
   name: 'users',
@@ -69,4 +70,7 @@ export class User {
 
   @OneToMany(() => Clock, (clocks) => clocks.user)
   clocks: Clock[];
+
+  @OneToMany(() => Chat, (chat) => chat.user)
+  chats: Chat[];
 }

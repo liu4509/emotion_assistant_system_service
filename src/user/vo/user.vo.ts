@@ -12,11 +12,17 @@ interface UserInfo {
 }
 
 export class UserDetailVo {
+  userInfo: UserInfo;
+}
+export class UserListVo {
   id: number;
   username: string;
   email: string;
   avatar: string;
-  createTime: Date;
+  isAdmin: boolean;
+  createTime: number;
+  roles: string[];
+  permissions: Permission[];
 }
 
 export class LoginUserVo {

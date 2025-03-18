@@ -40,6 +40,8 @@ import { EmailModule } from './email/email.module';
 import { ChatModule } from './chat/chat.module';
 import { Chat } from './chat/entities/chat.entity';
 import { Message } from './chat/entities/message.entity';
+import { UploadService } from './upload/upload.service';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -111,6 +113,7 @@ import { Message } from './chat/entities/message.entity';
     QuestionnaireModule,
     ScenarioModule,
     ChatModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [
@@ -123,6 +126,7 @@ import { Message } from './chat/entities/message.entity';
       provide: APP_GUARD,
       useClass: PermissionGuard,
     },
+    UploadService,
   ],
 })
 export class AppModule {}

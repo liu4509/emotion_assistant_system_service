@@ -13,13 +13,36 @@ import { MessageService } from './message.service';
 import { CreateChatDto, UpdateChatDto } from './dto/chat.dto';
 import { CreateMessageDto, GetAIResponseDto } from './dto/message.dto';
 import { RequireLogin, UserInfo } from 'src/decorator/custom.decorator';
+import { DeepseekService } from './deepseek.config';
 
 @Controller('chats')
 export class ChatController {
   constructor(
     private readonly chatService: ChatService,
     private readonly messageService: MessageService,
+    private readonly deepseekService: DeepseekService,
   ) {}
+
+  @Get('test-deepseek')
+  async testDeepseek() {
+    try {
+      const response =
+        await this.deepseekService.generateResponse(
+          '你好，请简单介绍一下你自己',
+        );
+      return {
+        success: true,
+        message: '测试成功',
+        response,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: '测试失败',
+        error: error.message,
+      };
+    }
+  }
 
   // 初始化
   @Get('init-data')

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
@@ -9,6 +9,8 @@ import { ChatService } from './chat.service';
 
 @Injectable()
 export class MessageService {
+  private readonly logger = new Logger(MessageService.name);
+
   constructor(
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
@@ -108,16 +110,29 @@ export class MessageService {
     const savedAiMessage = await this.messageRepository.save(aiMessage);
 
     try {
+      this.logger.log(`开始请求DeepSeek API，用户问题: ${content}`);
       // 获取AI响应
       const aiResponse = await this.deepseekService.generateResponse(content);
+      this.logger.log(
+        `DeepSeek API响应成功: ${aiResponse.substring(0, 50)}...`,
+      );
 
       // 更新AI消息
       savedAiMessage.content = aiResponse;
       savedAiMessage.status = 'done';
       return this.messageRepository.save(savedAiMessage);
     } catch (error) {
+      // 记录详细错误信息
+      this.logger.error(`DeepSeek API错误: ${error.message}`);
+      if (error.response) {
+        this.logger.error(
+          `错误响应数据: ${JSON.stringify(error.response.data)}`,
+        );
+      }
+
       // 如果出错，更新状态
-      savedAiMessage.content = '抱歉，我无法回答这个问题。';
+      savedAiMessage.content =
+        '抱歉，我无法回答这个问题。请检查服务器日志获取详细错误信息。';
       savedAiMessage.status = 'error';
       return this.messageRepository.save(savedAiMessage);
     }

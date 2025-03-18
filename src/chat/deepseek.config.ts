@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
 
@@ -6,17 +6,35 @@ import OpenAI from 'openai';
 export class DeepseekService {
   private readonly openai: OpenAI;
   private readonly model: string;
+  private readonly logger = new Logger(DeepseekService.name);
 
   constructor(private configService: ConfigService) {
+    const apiKey = this.configService.get('deepseek_api_key');
+    console.log(apiKey);
+    const baseURL = this.configService.get('deepseek_api_url');
+    const model = this.configService.get('deepseek_model');
+
+    this.logger.log(
+      `初始化DeepseekService: API URL=${baseURL}, Model=${model}`,
+    );
+
+    if (!apiKey) {
+      this.logger.error('缺少DeepSeek API密钥配置');
+    }
+
     this.openai = new OpenAI({
-      apiKey: this.configService.get('deepseek_api_key'),
-      baseURL: this.configService.get('deepseek_api_url'),
+      apiKey,
+      baseURL,
     });
-    this.model = this.configService.get('deepseek_model');
+    this.model = model;
   }
 
   async generateResponse(prompt: string): Promise<string> {
     try {
+      this.logger.log(
+        `调用DeepSeek API, 模型: ${this.model}, 提示词长度: ${prompt.length}`,
+      );
+
       const response = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
@@ -29,14 +47,35 @@ export class DeepseekService {
         max_tokens: 1000,
       });
 
-      return response.choices[0].message.content;
+      if (!response.choices || response.choices.length === 0) {
+        this.logger.error('DeepSeek API返回了空的响应');
+        throw new Error('API返回了空的响应');
+      }
+
+      const content = response.choices[0].message.content;
+      this.logger.log(`DeepSeek API响应成功, 响应长度: ${content.length}`);
+      return content;
     } catch (error) {
-      console.error(
-        'DeepSeek API 错误:',
-        error.response?.data || error.message,
-      );
+      this.logger.error(`DeepSeek API 错误: ${error.message}`);
+
+      if (error.response) {
+        this.logger.error(
+          `错误详情: ${JSON.stringify(error.response.data || {})}`,
+        );
+      }
+
+      if (
+        error.message.includes('402') ||
+        error.message.includes('Insufficient Balance')
+      ) {
+        throw new HttpException(
+          'AI服务暂时不可用，请稍后再试。如果问题持续存在，请联系管理员。',
+          HttpStatus.PAYMENT_REQUIRED,
+        );
+      }
+
       throw new HttpException(
-        '无法获取 AI 响应',
+        `无法获取 AI 响应: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -44,6 +83,8 @@ export class DeepseekService {
 
   async generateChatTitle(content: string): Promise<string> {
     try {
+      this.logger.log(`生成聊天标题, 内容长度: ${content.length}`);
+
       const response = await this.openai.chat.completions.create({
         model: this.model,
         messages: [
@@ -62,9 +103,16 @@ export class DeepseekService {
       });
 
       const title = response.choices[0].message.content.trim();
-      return title.length > 20 ? title.substring(0, 20) : title;
+      const finalTitle = title.length > 20 ? title.substring(0, 20) : title;
+      this.logger.log(`生成标题成功: ${finalTitle}`);
+      return finalTitle;
     } catch (error) {
-      console.error('生成标题错误:', error.response?.data || error.message);
+      this.logger.error(`生成标题错误: ${error.message}`);
+      if (error.response) {
+        this.logger.error(
+          `错误详情: ${JSON.stringify(error.response.data || {})}`,
+        );
+      }
       return '新对话';
     }
   }

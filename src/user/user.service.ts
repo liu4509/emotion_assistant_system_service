@@ -38,7 +38,8 @@ export class UserService {
     const skipCount = (pageNo - 1) * pageSize;
 
     const [users, totalCount] = await this.userRepository.findAndCount({
-      select: ['id', 'username', 'email', 'avatar', 'createTime'],
+      select: ['id', 'username', 'email', 'avatar', 'isAdmin', 'createTime'],
+      relations: ['roles', 'roles.permissions'],
       skip: skipCount,
       take: pageSize,
     });
@@ -55,6 +56,7 @@ export class UserService {
     });
     if (updateUserDto.avatar) {
       foundUser.avatar = updateUserDto.avatar;
+      foundUser.email = updateUserDto.email;
     }
 
     try {
@@ -70,6 +72,17 @@ export class UserService {
     const foundUser = await this.userRepository.findOneBy({
       id: userId,
     });
+    if (foundUser.password !== md5(passwordDto.currentPassword)) {
+      throw new HttpException('当前密码不正确', HttpStatus.BAD_REQUEST);
+    }
+    const captcha = await this.redisService.get(`captcha_${foundUser.email}`);
+    if (!captcha) {
+      throw new HttpException('验证码失效', HttpStatus.BAD_REQUEST);
+    }
+    if (passwordDto.verifyCode !== captcha) {
+      throw new HttpException('验证码不正确', HttpStatus.BAD_REQUEST);
+    }
+
     foundUser.password = md5(passwordDto.password);
     try {
       await this.userRepository.save(foundUser);
@@ -85,6 +98,7 @@ export class UserService {
       where: {
         id: userId,
       },
+      relations: ['roles', 'roles.permissions'],
     });
     return user;
   }
@@ -125,8 +139,6 @@ export class UserService {
       this.logger.error(error, UserService);
       return '注册失败';
     }
-
-    return 'success';
   }
   // 初始化数据
   async initData() {
@@ -200,18 +212,6 @@ export class UserService {
       createTime: user.createTime.getTime(),
       isAdmin: user.isAdmin,
       roles: user.roles.map((item) => item.name),
-      // permissions: user.roles.reduce((arr, item) => {
-      //   item.permissions.forEach((permission) => {
-      //     console.log(arr.indexOf(Permission));
-      // 因为indxOf 是基于对象引用判断 全都不同 所没法去重
-      //     if (arr.indexOf(permission.code) === -1) {
-      //       console.log(permission.code);
-      //       arr.push(permission);
-      //       console.log(arr);
-      //     }
-      //   });
-      //   return arr;
-      // }, []),
       // 基于 code值来去重
       permissions: [
         ...new Map(

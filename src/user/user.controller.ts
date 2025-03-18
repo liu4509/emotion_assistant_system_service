@@ -18,7 +18,7 @@ import {
   UpdateUserDto,
   UpdateUserPasswordDto,
 } from './dto/user.dto';
-import { JwtUserVo, UserDetailVo } from './vo/user.vo';
+import { JwtUserVo, UserDetailVo, UserListVo } from './vo/user.vo';
 import {
   RequireLogin,
   RequirePermission,
@@ -95,7 +95,32 @@ export class UserController {
     )
     pageSize: number,
   ) {
-    return await this.userService.findUsersByPage(pageNo, pageSize);
+    const { users: usersold, totalCount } =
+      await this.userService.findUsersByPage(pageNo, pageSize);
+
+    const users: UserListVo[] = [];
+
+    usersold.map((user) => {
+      // TODO:管理员列表
+      users.push({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        createTime: user.createTime.getTime(),
+        roles: user.roles.map((item) => item.name),
+        isAdmin: user.isAdmin,
+        // 基于 code值来去重
+        permissions: [
+          ...new Map(
+            user.roles
+              .flatMap((item) => item.permissions)
+              .map((permission) => [permission.code, permission]),
+          ).values(),
+        ],
+      });
+    });
+    return { users, totalCount };
   }
   // 用户、管理员信息修改
   @Post(['update', 'admin/update'])
@@ -123,12 +148,29 @@ export class UserController {
     const user = await this.userService.findUserDetailById(userId);
 
     const vo = new UserDetailVo();
-    vo.id = user.id;
-    vo.username = user.username;
-    vo.email = user.email;
-    vo.avatar = user.avatar;
-    vo.createTime = user.createTime;
+    vo.userInfo = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      avatar: user.avatar,
+      createTime: user.createTime.getTime(),
+      isAdmin: user.isAdmin,
+      roles: user.roles.map((item) => item.name),
+      // 基于 code值来去重
+      permissions: [
+        ...new Map(
+          user.roles
+            .flatMap((item) => item.permissions)
+            .map((permission) => [permission.code, permission]),
+        ).values(),
+      ],
+    };
 
+    // vo.id = user.id;
+    // vo.username = user.username;
+    // vo.email = user.email;
+    // vo.avatar = user.avatar;
+    // vo.createTime = user.createTime;
     return vo;
   }
   // 注册

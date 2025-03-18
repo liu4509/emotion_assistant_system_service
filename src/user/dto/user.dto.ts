@@ -40,12 +40,23 @@ export class LoginUserDto {
 
 export class UpdateUserPasswordDto {
   @IsNotEmpty({
-    message: '密码不能为空',
+    message: '当前密码不能为空',
   })
   @MinLength(6, {
-    message: '密码不能少于 6 位',
+    message: '当前密码不能少于 6 位',
+  })
+  currentPassword: string;
+  @IsNotEmpty({
+    message: '新密码不能为空',
+  })
+  @MinLength(6, {
+    message: '新密码不能少于 6 位',
   })
   password: string;
+  @IsNotEmpty({
+    message: '验证码不能为空',
+  })
+  verifyCode: string;
 }
 
 export class UpdateUserDto {

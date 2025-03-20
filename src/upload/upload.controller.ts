@@ -35,4 +35,41 @@ export class UploadController {
       );
     }
   }
+
+  /**
+   * 通用文件上传接口 - 支持图片、音频、视频等文件
+   * @param file 上传的文件
+   * @returns 上传后的URL
+   */
+  @Post('file')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException('没有上传文件', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      return await this.uploadService.uploadToQiniu(file);
+      // return {
+      //   success: true,
+      //   url,
+      // };
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          status:
+            error instanceof HttpException
+              ? error.getStatus()
+              : HttpStatus.INTERNAL_SERVER_ERROR,
+          error: {
+            message: error.message || '上传失败',
+          },
+        },
+        error instanceof HttpException
+          ? error.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

@@ -35,6 +35,17 @@ export function getQuestionnaireById(id) {
 }
 
 /**
+ * 获取随机问卷
+ * @returns {Promise}
+ */
+export function getQuestionnaireRandomId() {
+  return request({
+    url: `/questionnaire/random`,
+    method: 'get',
+  });
+}
+
+/**
  * 创建问卷
  * @param {Object} data
  * @param {string} data.title - 问卷标题

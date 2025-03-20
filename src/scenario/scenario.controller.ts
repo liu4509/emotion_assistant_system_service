@@ -28,6 +28,11 @@ export class ScenarioController {
     return await this.scenarioService.findAll();
   }
 
+  @Get('random')
+  async findRandom(): Promise<Scenario> {
+    return await this.scenarioService.findRandom();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Scenario> {
     return await this.scenarioService.findOne(+id);

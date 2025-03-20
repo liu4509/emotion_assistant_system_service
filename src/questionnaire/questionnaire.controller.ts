@@ -31,6 +31,11 @@ export class QuestionnaireController {
     return await this.questionnaireService.findAll();
   }
 
+  @Get('random')
+  async findRandom(): Promise<Questionnaire> {
+    return await this.questionnaireService.findRandom();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Questionnaire> {
     return await this.questionnaireService.findOne(+id);

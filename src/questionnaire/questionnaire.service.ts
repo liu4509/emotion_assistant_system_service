@@ -143,6 +143,30 @@ export class QuestionnaireService {
     return questionnaire;
   }
 
+  /**
+   * 随机获取一个问卷
+   * @returns 随机的问卷数据
+   * @throws NotFoundException 如果没有问卷存在
+   */
+  async findRandom(): Promise<Questionnaire> {
+    // 获取所有问卷ID
+    const questionnaires = await this.questionnaireRepository.find({
+      select: ['id'],
+    });
+
+    // 检查是否存在问卷
+    if (!questionnaires || questionnaires.length === 0) {
+      throw new NotFoundException('没有问卷数据');
+    }
+
+    // 随机选择一个问卷ID
+    const randomIndex = Math.floor(Math.random() * questionnaires.length);
+    const randomId = questionnaires[randomIndex].id;
+
+    // 获取完整的问卷数据
+    return this.findOne(randomId);
+  }
+
   async create(
     createQuestionnaireDto: CreateQuestionnaireDto,
   ): Promise<Questionnaire> {

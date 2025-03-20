@@ -102,6 +102,30 @@ export class ScenarioService {
     return scenario;
   }
 
+  /**
+   * 随机获取一个情绪调节场景
+   * @returns 随机的情绪调节场景数据
+   * @throws NotFoundException 如果没有情绪调节场景存在
+   */
+  async findRandom(): Promise<Scenario> {
+    // 获取所有情绪调节场景ID
+    const scenarios = await this.scenarioRepository.find({
+      select: ['id'],
+    });
+
+    // 检查是否存在情绪调节场景
+    if (!scenarios || scenarios.length === 0) {
+      throw new NotFoundException('没有情绪调节场景数据');
+    }
+
+    // 随机选择一个情绪调节场景ID
+    const randomIndex = Math.floor(Math.random() * scenarios.length);
+    const randomId = scenarios[randomIndex].id;
+
+    // 获取完整的情绪调节场景数据
+    return this.findOne(randomId);
+  }
+
   async create(createScenarioDto: CreateScenarioDto): Promise<Scenario> {
     const { title, description, questions } = createScenarioDto;
 

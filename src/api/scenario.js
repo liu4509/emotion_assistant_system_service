@@ -35,6 +35,17 @@ export function getScenarioById(id) {
 }
 
 /**
+ * 获取随机情绪调节场景
+ * @returns {Promise}
+ */
+export function getScenarioRandomId() {
+  return request({
+    url: `/scenario/random`,
+    method: 'get',
+  });
+}
+
+/**
  * 创建情绪调节场景
  * @param {Object} data
  * @param {string} data.title - 场景标题

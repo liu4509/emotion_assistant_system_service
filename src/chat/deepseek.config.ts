@@ -7,6 +7,7 @@ export class DeepseekService {
   private readonly openai: OpenAI;
   private readonly model: string;
   private readonly logger = new Logger(DeepseekService.name);
+  // TODO: 通过动态配置 deepseek token 数据库取值
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get('deepseek_api_key');

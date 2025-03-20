@@ -47,19 +47,19 @@ export class ChatController {
   // 初始化
   @Get('init-data')
   async initData() {
-    return this.chatService.initData();
+    return await this.chatService.initData();
   }
 
   @Get()
   @RequireLogin()
   async findAll(@UserInfo('userId') userId: number) {
-    return this.chatService.findAll(userId);
+    return await this.chatService.findAll(userId);
   }
 
   @Get(':id')
   @RequireLogin()
   async findOne(@Param('id') id: string, @UserInfo('userId') userId: number) {
-    return this.chatService.findOne(id, userId);
+    return await this.chatService.findOne(id, userId);
   }
 
   @Post()
@@ -68,7 +68,7 @@ export class ChatController {
     @UserInfo('userId') userId: number,
     @Body() createChatDto: CreateChatDto,
   ) {
-    return this.chatService.create(userId, createChatDto);
+    return await this.chatService.create(userId, createChatDto);
   }
 
   @Post(':id/title')
@@ -78,13 +78,15 @@ export class ChatController {
     @UserInfo('userId') userId: number,
     @Body() updateChatDto: UpdateChatDto,
   ) {
-    return this.chatService.update(id, userId, updateChatDto);
+    await this.chatService.update(id, userId, updateChatDto);
+    return '更新成功';
   }
 
   @Delete(':id')
   @RequireLogin()
   async remove(@Param('id') id: string, @UserInfo('userId') userId: number) {
-    return this.chatService.remove(id, userId);
+    await this.chatService.remove(id, userId);
+    return '删除成功';
   }
   // messages service
   @Get(':chatId/messages')
@@ -93,7 +95,7 @@ export class ChatController {
     @Param('chatId') chatId: string,
     @UserInfo('userId') userId: number,
   ) {
-    return this.messageService.findAll(chatId, userId);
+    return await this.messageService.findAll(chatId, userId);
   }
 
   @Post(':chatId/messages')
@@ -103,7 +105,7 @@ export class ChatController {
     @UserInfo('userId') userId: number,
     @Body() createMessageDto: CreateMessageDto,
   ) {
-    return this.messageService.create(chatId, userId, createMessageDto);
+    return await this.messageService.create(chatId, userId, createMessageDto);
   }
 
   @Post('messages/ai-response')
@@ -112,6 +114,6 @@ export class ChatController {
     @UserInfo('userId') userId: number,
     @Body() getAIResponseDto: GetAIResponseDto,
   ) {
-    return this.messageService.getAIResponse(userId, getAIResponseDto);
+    return await this.messageService.getAIResponse(userId, getAIResponseDto);
   }
 }

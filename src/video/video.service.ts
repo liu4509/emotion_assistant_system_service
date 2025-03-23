@@ -77,10 +77,20 @@ export class VideoService {
     await this.videoRepository.save([video1, video2, video3, video4, video5]);
   }
 
-  async findAll(): Promise<Video[]> {
-    return this.videoRepository.find({
-      relations: ['categorys'],
+  async findAll(pageNo: number, pageSize: number) {
+    const skipCount = (pageNo - 1) * pageSize;
+    const [article, totalCount] = await this.videoRepository.findAndCount({
+      skip: skipCount,
+      take: pageSize,
+      relations: {
+        categorys: true,
+      },
     });
+
+    return {
+      article,
+      totalCount,
+    };
   }
 
   async findOne(id: number): Promise<Video> {

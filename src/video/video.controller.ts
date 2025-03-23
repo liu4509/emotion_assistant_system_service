@@ -9,10 +9,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { Video } from './entities/video.entity';
 import { CreateVideoDto, UpdateVideoDto } from './dto/video.dto';
+import { generateParseIntPipe } from '@/utils';
 
 @Controller('video')
 export class VideoController {
@@ -25,8 +27,17 @@ export class VideoController {
   }
 
   @Get()
-  async findAll(): Promise<Video[]> {
-    return await this.videoService.findAll();
+  async findAll(
+    @Query('pageNo', new DefaultValuePipe(1), generateParseIntPipe('pageNo'))
+    pageNo: number,
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(2),
+      generateParseIntPipe('pageSize'),
+    )
+    pageSize: number,
+  ) {
+    return await this.videoService.findAll(pageNo, pageSize);
   }
 
   @Get('category')

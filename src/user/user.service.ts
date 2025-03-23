@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/User.entity';
 import { Repository } from 'typeorm';
 import { Role } from './entities/Role.entity';
-import { Permission } from './entities/permission.entity';
+import { Permission } from '@/user/entities/Permission.entity';
 import {
   LoginUserDto,
   RegisterUserDto,

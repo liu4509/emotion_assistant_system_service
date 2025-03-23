@@ -13,6 +13,9 @@ export function initMediaData() {
 
 /**
  * 获取所有音频
+ * @param {Object} params
+ * @param {number} params.pageNo - 页码
+ * @param {number} params.pageSize - 每页数量
  * @returns {Promise}
  */
 export function getMediaList() {

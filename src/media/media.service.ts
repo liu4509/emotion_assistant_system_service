@@ -94,10 +94,20 @@ export class MediaService {
     await this.mediaRepository.save([media1, media2, media3, media4, media5]);
   }
 
-  async findAll(): Promise<Media[]> {
-    return this.mediaRepository.find({
-      relations: ['categorys'],
+  async findAll(pageNo: number, pageSize: number) {
+    const skipCount = (pageNo - 1) * pageSize;
+    const [article, totalCount] = await this.mediaRepository.findAndCount({
+      skip: skipCount,
+      take: pageSize,
+      relations: {
+        categorys: true,
+      },
     });
+
+    return {
+      article,
+      totalCount,
+    };
   }
 
   async findOne(id: number): Promise<Media> {

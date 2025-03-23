@@ -1,4 +1,4 @@
-import { Permission } from '../entities/permission.entity';
+import { Permission } from '@/user/entities/Permission.entity';
 
 interface UserInfo {
   id: number;

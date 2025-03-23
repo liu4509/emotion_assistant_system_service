@@ -19,7 +19,7 @@ async function bootstrap() {
 
   // 跨域支持
   app.enableCors();
-  await app.listen(configService.get('nest_server_port'), () => {
+  await app.listen(configService.get('nest_server_port'), '127.0.0.1', () => {
     logger.debug(`loclhost:${configService.get('nest_server_port')}`);
   });
 }

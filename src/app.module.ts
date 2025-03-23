@@ -1,12 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { User } from './user/entities/User.entity';
+import { User } from '@/user/entities/User.entity';
 import { Role } from './user/entities/Role.entity';
-import { Permission } from './user/entities/permission.entity';
+import { Permission } from '@/user/entities/Permission.entity';
 import { DiarieModule } from './diarie/diarie.module';
 import { Diarie } from './diarie/entities/diarie.entity';
 import { Mood } from './diarie/entities/mood.entity';
@@ -35,7 +35,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { LoginGuard } from './guard/login.guard';
 import { PermissionGuard } from './guard/permission.guard';
-import { RedisModule } from './redis/redis.module';
+import { redisCfg, RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
 import { ChatModule } from './chat/chat.module';
 import { Chat } from './chat/entities/chat.entity';
@@ -101,7 +101,18 @@ import { UploadModule } from './upload/upload.module';
       },
       inject: [ConfigService],
     }),
-    RedisModule,
+    RedisModule.registerAsync({
+      useFactory: async (configService: ConfigService): Promise<redisCfg> => {
+        return {
+          socket: {
+            port: configService.get('redis_server_port'),
+            host: configService.get('redis_server_host'),
+          },
+          database: configService.get('redis_server_db'),
+        };
+      },
+      inject: [ConfigService],
+    }),
     EmailModule,
     DiarieModule,
     AttractionModule,

@@ -214,10 +214,20 @@ export class ArticleService {
     ]);
   }
 
-  async findAll(): Promise<Article[]> {
-    return this.articleRepository.find({
-      relations: ['categorys'],
+  async findAll(pageNo: number, pageSize: number) {
+    const skipCount = (pageNo - 1) * pageSize;
+    const [article, totalCount] = await this.articleRepository.findAndCount({
+      skip: skipCount,
+      take: pageSize,
+      relations: {
+        categorys: true,
+      },
     });
+
+    return {
+      article,
+      totalCount,
+    };
   }
 
   async findOne(id: number): Promise<Article> {

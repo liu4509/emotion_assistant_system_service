@@ -13,6 +13,9 @@ export function initArticleData() {
 
 /**
  * 获取所有文章
+ * @param {Object} params
+ * @param {number} params.pageNo - 页码
+ * @param {number} params.pageSize - 每页数量
  * @returns {Promise}
  */
 export function getArticleList() {
@@ -97,29 +100,29 @@ export function deleteArticle(id) {
   });
 }
 
-// 获取所有文章
-getArticleList();
+// // 获取所有文章
+// getArticleList();
 
-// 获取单篇文章
-getArticleById('1');
+// // 获取单篇文章
+// getArticleById('1');
 
-// 按分类获取文章
-getArticlesByCategory({ value: 'very_positive' });
+// // 按分类获取文章
+// getArticlesByCategory({ value: 'very_positive' });
 
-// 创建文章
-createArticle({
-  title: '如何缓解焦虑情绪',
-  content: '文章内容...',
-  cover: 'cover.jpg',
-  description: '文章描述...',
-  categoryValues: ['very_positive'],
-});
+// // 创建文章
+// createArticle({
+//   title: '如何缓解焦虑情绪',
+//   content: '文章内容...',
+//   cover: 'cover.jpg',
+//   description: '文章描述...',
+//   categoryValues: ['very_positive'],
+// });
 
-// 更新文章
-updateArticle('1', {
-  title: '新标题',
-  content: '新内容',
-});
+// // 更新文章
+// updateArticle('1', {
+//   title: '新标题',
+//   content: '新内容',
+// });
 
-// 删除文章
-deleteArticle('1');
+// // 删除文章
+// deleteArticle('1');

@@ -130,8 +130,6 @@ export function refreshAdminToken() {
  * @param {Object} params
  * @param {number} params.pageNo - 页码
  * @param {number} params.pageSize - 每页数量
- * @param {string} params.username - 用户名（可选）
- * @param {string} params.email - 邮箱（可选）
  * @returns {Promise}
  */
 export function getUserList(params) {

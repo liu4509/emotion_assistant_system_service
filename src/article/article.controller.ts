@@ -9,10 +9,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { Article } from './entities/article.entity';
 import { CreateArticleDto, UpdateArticleDto } from './dto/article.dto';
+import { generateParseIntPipe } from '@/utils';
 
 @Controller('article')
 export class ArticleController {
@@ -25,8 +27,17 @@ export class ArticleController {
   }
 
   @Get()
-  async findAll(): Promise<Article[]> {
-    return await this.articleService.findAll();
+  async findAll(
+    @Query('pageNo', new DefaultValuePipe(1), generateParseIntPipe('pageNo'))
+    pageNo: number,
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(2),
+      generateParseIntPipe('pageSize'),
+    )
+    pageSize: number,
+  ) {
+    return await this.articleService.findAll(pageNo, pageSize);
   }
 
   @Get('category')

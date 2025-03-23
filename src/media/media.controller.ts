@@ -9,10 +9,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { Media } from './entities/media.entity';
 import { CreateMediaDto, UpdateMediaDto } from './dto/media.dto';
+import { generateParseIntPipe } from '@/utils';
 
 @Controller('media')
 export class MediaController {
@@ -25,8 +27,17 @@ export class MediaController {
   }
 
   @Get()
-  async findAll(): Promise<Media[]> {
-    return await this.mediaService.findAll();
+  async findAll(
+    @Query('pageNo', new DefaultValuePipe(1), generateParseIntPipe('pageNo'))
+    pageNo: number,
+    @Query(
+      'pageSize',
+      new DefaultValuePipe(2),
+      generateParseIntPipe('pageSize'),
+    )
+    pageSize: number,
+  ) {
+    return await this.mediaService.findAll(pageNo, pageSize);
   }
 
   @Get('category')

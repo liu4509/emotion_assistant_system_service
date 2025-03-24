@@ -29,3 +29,9 @@ services:
 networks:
   common-network:
     driver: bridge
+volumes:
+  test-mysql:
+    external: true
+  test-redis:
+    external: true
+

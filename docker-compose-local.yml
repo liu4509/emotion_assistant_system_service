@@ -14,7 +14,7 @@ services:
   mysql-container:
     image: mysql
     volumes:
-      -  test-mysql:/var/lib/mysql
+      - D:\curriculums\nest+react\db\booking-mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: emotion_assistant_system
       MYSQL_ROOT_PASSWORD: guang
@@ -23,7 +23,7 @@ services:
   redis-container:
     image: redis
     volumes:
-      - test-redis:/data
+      - D:\curriculums\nest+react\db:/data
     networks:
       - common-network
 networks:

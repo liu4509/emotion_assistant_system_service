@@ -42,6 +42,7 @@ import { Chat } from './chat/entities/chat.entity';
 import { Message } from './chat/entities/message.entity';
 import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -60,7 +61,7 @@ import { UploadModule } from './upload/upload.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: 'src/.env',
+      envFilePath: path.join(__dirname, '.env'),
     }),
     TypeOrmModule.forRootAsync({
       useFactory(configService: ConfigService) {

@@ -1,0 +1,31 @@
+version: '1.1'
+services:
+  nest-app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - mysql-container
+      - redis-container
+    ports:
+      - 3005:3000
+    networks:
+      - common-network
+  mysql-container:
+    image: mysql
+    volumes:
+      - D:\curriculums\nest+react\db\booking-mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: emotion_assistant_system
+      MYSQL_ROOT_PASSWORD: guang
+    networks:
+      - common-network
+  redis-container:
+    image: redis
+    volumes:
+      - D:\curriculums\nest+react\db:/data
+    networks:
+      - common-network
+networks:
+  common-network:
+    driver: bridge
